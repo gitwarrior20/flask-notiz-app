@@ -108,8 +108,8 @@ def bearbeiten(id):
     notiz_bearbeiten(id, neuer_text)
 
     return redirect("/")
+ 
+datenbank_starten()
 
-    datenbank_starten()
 if __name__ == "__main__":
-
     app.run(debug=True)
