@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Meine Notiz-App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<h1>📝 Meine Notiz-App</h1>
+
+
+<form method="POST">
+
+    <input 
+        type="text" 
+        name="notiz" 
+        placeholder="Neue Notiz schreiben..."
+        required
+    >
+
+    <button type="submit">
+        Speichern
+    </button>
+
+</form>
+
+
+<hr>
+
+
+<h2>Meine Notizen:</h2>
+
+
+{% for notiz in notizen %}
+
+<form method="POST" action="/bearbeiten/{{ notiz[0] }}">
+
+    <input 
+        type="text" 
+        name="text" 
+        value="{{ notiz[1] }}"
+    >
+
+    <button type="submit">
+        ✏️ Speichern
+    </button>
+
+    <a href="/loeschen/{{ notiz[0] }}">
+        ❌ Löschen
+    </a>
+
+</form>
+
+<br>
+
+{% endfor %}
+
+</body>
+
+</html>

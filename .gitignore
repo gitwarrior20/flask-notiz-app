@@ -1,0 +1,4 @@
+.venv/
+notizen.db
+notizen.txt
+__pycache__/
