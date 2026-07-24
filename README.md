@@ -1,23 +1,25 @@
 # 📝 Flask Notiz-App
 
-Eine einfache Notiz-App gebaut mit Python und Flask.
+Meine erste Web-App mit Python und Flask.
 
-## 🚀 Funktionen
+## Was kann die App?
 
-- ✅ Notizen erstellen
-- ✅ Notizen anzeigen
-- ✅ Notizen bearbeiten
-- ✅ Notizen löschen
-- ✅ Speicherung mit SQLite
-- ✅ Online bereitgestellt mit Render
+- Notizen speichern
+- Notizen anzeigen
+- Notizen bearbeiten
+- Notizen löschen
 
-## 🛠️ Technologien
+## Gebaut mit
 
-- Python 3
+- Python
 - Flask
 - SQLite
 - HTML
 - CSS
-- Git & GitHub
 
-## 📂 Projektstruktur
+## Starten
+
+Projekt herunterladen:
+
+```bash
+git clone https://github.com/gitwarrior20/flask-notiz-app.git
