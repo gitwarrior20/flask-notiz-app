@@ -2,14 +2,14 @@
 
 Meine erste Web-App mit Python und Flask.
 
-## Was kann die App?
+## 🚀 Was kann die App?
 
 - Notizen speichern
 - Notizen anzeigen
 - Notizen bearbeiten
 - Notizen löschen
 
-## Gebaut mit
+## 🛠️ Gebaut mit
 
 - Python
 - Flask
@@ -17,7 +17,7 @@ Meine erste Web-App mit Python und Flask.
 - HTML
 - CSS
 
-## Starten
+## 💻 Starten
 
 Projekt herunterladen:
 
