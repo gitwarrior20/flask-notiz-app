@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Profil</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="topbar">
+
+<h1>⚙️ Profil</h1>
+
+<div>
+
+<a href="/">
+Notizen
+</a>
+
+|
+
+<a href="/dashboard">
+Dashboard
+</a>
+
+|
+
+<a href="/logout">
+Logout
+</a>
+
+<button id="darkmode-toggle">
+    🌙
+</button>
+
+</div>
+
+</div>
+
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+{% for category, message in messages %}
+
+<div class="message {{ category }}">
+{{ message }}
+</div>
+
+{% endfor %}
+
+{% endwith %}
+
+
+
+
+<div class="dashboard-card">
+
+
+<h2>
+👤 {{ user[0] }}
+</h2>
+
+
+<p>
+Aktuelle E-Mail:
+</p>
+
+<p>
+{{ user[1] }}
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<h2>
+📧 E-Mail ändern
+</h2>
+
+
+<form method="POST">
+
+
+<input type="hidden" name="aktion" value="email">
+
+
+<input
+type="email"
+name="email"
+placeholder="Neue E-Mail"
+required
+>
+
+
+<button>
+Speichern
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<h2>
+🔐 Passwort ändern
+</h2>
+
+
+<form method="POST">
+
+
+<input type="hidden" name="aktion" value="passwort">
+
+
+<input
+type="password"
+name="alt"
+placeholder="Altes Passwort"
+required
+>
+
+
+<input
+type="password"
+name="neu"
+placeholder="Neues Passwort (min. 8 Zeichen)"
+required
+>
+
+<input
+type="password"
+name="bestaetigung"
+placeholder="Passwort wiederholen"
+required
+>
+
+
+<button>
+Passwort ändern
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+</div>
+
+<script>
+
+const button = document.getElementById("darkmode-toggle");
+
+if (localStorage.getItem("darkmode") === "an") {
+
+    document.body.classList.add("dark");
+
+    button.textContent = "☀️";
+
+}
+
+button.onclick = function () {
+
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+
+        localStorage.setItem("darkmode", "an");
+
+        button.textContent = "☀️";
+
+    } else {
+
+        localStorage.setItem("darkmode", "aus");
+
+        button.textContent = "🌙";
+
+    }
+
+};
+
+</script>
+
+</body>
+
+</html>
