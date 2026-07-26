@@ -1,63 +1,207 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Meine Notiz-App</title>
+    <title>Meine Notizen</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
+<script>
+
+setTimeout(() => {
+
+    document.querySelectorAll(".message").forEach((msg) => {
+
+        msg.style.transition = "opacity 0.5s";
+        msg.style.opacity = "0";
+
+        setTimeout(() => {
+            msg.style.display = "none";
+        }, 500);
+
+    });
+
+}, 3000);
+
+</script>
+
+<script>
+
+function bearbeiten(id) {
+
+    let formular = document.getElementById("edit-" + id);
+
+    if (formular.style.display === "block") {
+
+        formular.style.display = "none";
+
+    } else {
+
+        formular.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+<div id="delete-box" class="overlay">
+
+    <div class="delete-modal">
+
+        <h2>⚠️ Notiz löschen?</h2>
+
+        <p>
+            Möchtest du diese Notiz wirklich löschen?
+        </p>
+
+        <div>
+            <button onclick="schliessen()">
+                Abbrechen
+            </button>
+
+            <a id="delete-link" class="delete-confirm">
+                Löschen
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let deleteBox = document.getElementById("delete-box");
+
+
+function loeschen(id) {
+
+    deleteBox.style.display = "flex";
+
+    document.getElementById("delete-link").href =
+        "/loeschen/" + id;
+
+}
+
+
+function schliessen() {
+
+    deleteBox.style.display = "none";
+
+}
+
+</script>
+
 <body>
 
-<h1>📝 Meine Notiz-App</h1>
+<div class="container">
+
+    <div class="topbar">
+        <h1>📝 Meine Notizen</h1>
+
+        <div>
+            Hallo {{ session["user"] }}
+            |
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
 
 
-<form method="POST">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <form method="POST">
+
+        <input 
+            type="text"
+            name="notiz"
+            placeholder="Neue Notiz..."
+            required
+        >
+
+        <button type="submit">
+            Speichern
+        </button>
+
+    </form>
+
+
+<h2>Deine Notizen</h2>
+
+<form method="GET" class="suche">
 
     <input 
-        type="text" 
-        name="notiz" 
-        placeholder="Neue Notiz schreiben..."
-        required
+        type="text"
+        name="suche"
+        placeholder="Notizen durchsuchen..."
     >
 
     <button type="submit">
-        Speichern
+        Suchen
     </button>
 
 </form>
-
-
-<hr>
-
-
-<h2>Meine Notizen:</h2>
-
 
 {% for notiz in notizen %}
 
-<form method="POST" action="/bearbeiten/{{ notiz[0] }}">
+<div class="notiz">
 
-    <input 
-        type="text" 
-        name="text" 
-        value="{{ notiz[1] }}"
-    >
+    <h3>📝 Notiz</h3>
 
-    <button type="submit">
-        ✏️ Speichern
+    <p class="notiz-text">
+        {{ notiz[1] }}
+    </p>
+
+
+    <p class="datum">
+        Erstellt: {{ notiz[2] }}
+    </p>
+
+    <p class="datum">
+        Bearbeitet: {{ notiz[3] }}
+    </p>
+
+
+    <button 
+        class="edit-button"
+        onclick="bearbeiten('{{ notiz[0] }}')">
+        ✏️ Bearbeiten
     </button>
 
-    <a href="/loeschen/{{ notiz[0] }}">
-        ❌ Löschen
-    </a>
 
-</form>
+    <form 
+        id="edit-{{ notiz[0] }}"
+        class="edit-form"
+        method="POST"
+        action="/bearbeiten/{{ notiz[0] }}"
+    >
 
-<br>
+        <input
+            type="text"
+            name="text"
+            value="{{ notiz[1] }}"
+        >
+
+        <button type="submit">
+            Speichern
+        </button>
+
+    </form>
+
+<button 
+class="delete"
+onclick="loeschen('{{ notiz[0] }}')">
+🗑️ Löschen
+</button>
+
+
+</div>
 
 {% endfor %}
-
-</body>
-
-</html>
