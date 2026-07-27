@@ -2,9 +2,11 @@
 <html>
 
 <head>
+
     <title>Meine Notizen</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 
@@ -14,191 +16,384 @@
 <div class="container">
 
 
-    <div class="topbar">
+<div class="topbar">
 
-        <h1>📝 Meine Notizen</h1>
+    <h1>📝 Meine Notizen</h1>
 
-        <div>
 
-            Hallo {{ session["user"] }}
+    <div>
 
-            |
+        Hallo {{ session["user"] }}
 
-            <a href="/dashboard">
-                Dashboard
-            </a>
+        |
 
-            |
+        <a href="/dashboard">
+            Dashboard
+        </a>
 
-            <a href="/logout">
-                Logout
-            </a>
+        |
 
-            <button id="darkmode-toggle">
-             🌙
-            </button>
+        <a href="/logout">
+            Logout
+        </a>
 
-        </div>
+
+        <button id="darkmode-toggle">
+            🌙
+        </button>
 
     </div>
 
 
+</div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
 
-        {% for category, message in messages %}
 
-            <div class="message {{ category }}">
-                {{ message }}
-            </div>
 
-        {% endfor %}
+{% with messages = get_flashed_messages(with_categories=true) %}
 
-    {% endwith %}
+{% for category, message in messages %}
 
+<div class="message {{ category }}">
+    {{ message }}
+</div>
 
+{% endfor %}
 
+{% endwith %}
 
 
-    <form method="POST">
 
-        <input
-            type="text"
-            name="notiz"
-            placeholder="Neue Notiz..."
-            required
-        >
 
-        <button type="submit">
-            ➕ Speichern
-        </button>
 
-    </form>
+<!-- Neue Notiz -->
 
+<form method="POST">
 
 
+<input
+type="text"
+name="notiz"
+placeholder="Neue Notiz..."
+required
+>
 
 
-    <h2>Deine Notizen</h2>
+<select name="kategorie">
 
+<option>Allgemein</option>
+<option>Arbeit</option>
+<option>Schule</option>
+<option>Privat</option>
+<option>Ideen</option>
 
+</select>
 
-    <form method="GET" class="suche">
 
-        <input
-            type="text"
-            name="suche"
-            placeholder="Notizen durchsuchen..."
-        >
+<button type="submit">
+➕ Speichern
+</button>
 
-        <button type="submit">
-            🔎 Suchen
-        </button>
 
-    </form>
+</form>
 
 
 
 
 
-    {% for notiz in notizen %}
 
+<h2>Deine Notizen</h2>
 
-    <div class="notiz">
 
 
-        <h3>
-            📝 Notiz
-        </h3>
 
 
-        <p class="notiz-text">
-            {{ notiz[1] }}
-        </p>
+<!-- Suche + Filter zusammen -->
 
-        {% if notiz[4] == 1 %}
-        <span>📌 Angeheftet</span>
-        {% endif %}
+<form method="GET" class="suche">
 
 
+<input
+type="text"
+name="suche"
+placeholder="Notizen durchsuchen..."
+>
 
-        <p class="datum">
-            Erstellt: {{ notiz[2] }}
-        </p>
 
+<select name="kategorie">
 
-        <p class="datum">
-            Bearbeitet: {{ notiz[3] }}
-        </p>
 
-        
+<option value="">
+Alle Kategorien
+</option>
 
 
+<option value="Arbeit">
+💼 Arbeit
+</option>
 
-        <button
-            class="edit-button"
-            onclick="bearbeiten('{{ notiz[0] }}')">
 
-            ✏️ Bearbeiten
+<option value="Schule">
+📚 Schule
+</option>
 
-        </button>
 
-       {% if notiz[4] == 1 %}
+<option value="Privat">
+🏠 Privat
+</option>
 
-       <a class="pin" href="/anheften/{{ notiz[0] }}">
-       📍 Lösen
-       </a>
 
-       {% else %}
+<option value="Ideen">
+💡 Ideen
+</option>
 
-       <a class="pin" href="/anheften/{{ notiz[0] }}">
-       📌 Anheften
-       </a>
 
-       {% endif %}
+<option value="Allgemein">
+📌 Allgemein
+</option>
 
 
+</select>
 
 
 
-        <form
-            id="edit-{{ notiz[0] }}"
-            class="edit-form"
-            method="POST"
-            action="/bearbeiten/{{ notiz[0] }}"
-        >
+<button type="submit">
+🔎 Suchen
+</button>
 
-            <input
-                type="text"
-                name="text"
-                value="{{ notiz[1] }}"
-            >
 
+</form>
 
-            <button type="submit">
-                Speichern
-            </button>
 
 
-        </form>
 
 
 
 
+{% for notiz in notizen %}
 
-        <button
-            class="delete"
-            onclick="loeschen('{{ notiz[0] }}')">
 
-            🗑️ Löschen
+<div class="notiz">
 
-        </button>
 
 
-    </div>
+<h3>
+📝 Notiz
+</h3>
 
 
-    {% endfor %}
+
+<p class="notiz-text">
+
+{{ notiz[1] }}
+
+</p>
+
+
+
+
+{% if notiz[5] == "Arbeit" %}
+
+<span class="badge arbeit">
+    💼 Arbeit
+</span>
+
+{% elif notiz[5] == "Schule" %}
+
+<span class="badge schule">
+    📚 Schule
+</span>
+
+{% elif notiz[5] == "Privat" %}
+
+<span class="badge privat">
+    🏠 Privat
+</span>
+
+{% elif notiz[5] == "Ideen" %}
+
+<span class="badge ideen">
+    💡 Ideen
+</span>
+
+{% else %}
+
+<span class="badge allgemein">
+    📌 Allgemein
+</span>
+
+{% endif %}
+
+
+
+
+{% if notiz[4] == 1 %}
+
+<span>
+📌 Angeheftet
+</span>
+
+{% endif %}
+
+
+
+
+
+<p class="datum">
+
+Erstellt:
+{{ notiz[2] }}
+
+</p>
+
+
+
+<p class="datum">
+
+Bearbeitet:
+{{ notiz[3] }}
+
+</p>
+
+
+
+
+
+
+<button
+class="edit-button"
+onclick="bearbeiten('{{ notiz[0] }}')">
+
+✏️ Bearbeiten
+
+</button>
+
+
+
+
+
+{% if notiz[4] == 1 %}
+
+
+<a class="pin" href="/anheften/{{ notiz[0] }}">
+
+📍 Lösen
+
+</a>
+
+
+{% else %}
+
+
+<a class="pin" href="/anheften/{{ notiz[0] }}">
+
+📌 Anheften
+
+</a>
+
+
+{% endif %}
+
+
+
+
+
+
+
+<form
+
+id="edit-{{ notiz[0] }}"
+
+class="edit-form"
+
+method="POST"
+
+action="/bearbeiten/{{ notiz[0] }}"
+
+>
+
+
+
+<input
+
+type="text"
+
+name="text"
+
+value="{{ notiz[1] }}"
+
+>
+
+
+
+
+<select name="kategorie">
+
+
+<option {% if notiz[5]=="Allgemein" %}selected{% endif %}>
+Allgemein
+</option>
+
+
+<option {% if notiz[5]=="Arbeit" %}selected{% endif %}>
+Arbeit
+</option>
+
+
+<option {% if notiz[5]=="Schule" %}selected{% endif %}>
+Schule
+</option>
+
+
+<option {% if notiz[5]=="Privat" %}selected{% endif %}>
+Privat
+</option>
+
+
+<option {% if notiz[5]=="Ideen" %}selected{% endif %}>
+Ideen
+</option>
+
+
+</select>
+
+
+
+
+<button type="submit">
+
+Speichern
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+
+<button
+
+class="delete"
+
+onclick="loeschen('{{ notiz[0] }}')">
+
+🗑️ Löschen
+
+</button>
+
+
+
+</div>
+
+
+
+{% endfor %}
+
+
 
 
 
@@ -208,35 +403,47 @@
 
 
 
-<!-- Lösch-Bestätigung -->
+
+
+<!-- Lösch Fenster -->
+
 
 <div id="delete-box" class="overlay">
 
 
-    <div class="delete-modal">
+<div class="delete-modal">
 
 
-        <h2>
-            ⚠️ Notiz löschen?
-        </h2>
+<h2>
+⚠️ Notiz löschen?
+</h2>
 
 
-        <p>
-            Möchtest du diese Notiz wirklich löschen?
-        </p>
+
+<p>
+Möchtest du diese Notiz wirklich löschen?
+</p>
 
 
-        <button onclick="schliessen()">
-            Abbrechen
-        </button>
+
+<button onclick="schliessen()">
+
+Abbrechen
+
+</button>
 
 
-        <a id="delete-link" class="delete-confirm">
-            Löschen
-        </a>
 
 
-    </div>
+<a id="delete-link" class="delete-confirm">
+
+Löschen
+
+</a>
+
+
+
+</div>
 
 
 </div>
@@ -246,53 +453,59 @@
 
 
 
+
+
+
 <script>
 
-
-// Flash Nachrichten ausblenden
 
 setTimeout(() => {
 
-    document.querySelectorAll(".message").forEach((msg) => {
 
-        msg.style.transition = "opacity 0.5s";
-        msg.style.opacity = "0";
+document.querySelectorAll(".message").forEach((msg)=>{
 
 
-        setTimeout(() => {
+msg.style.transition="opacity 0.5s";
 
-            msg.style.display = "none";
-
-        }, 500);
+msg.style.opacity="0";
 
 
-    });
+setTimeout(()=>{
 
+msg.style.display="none";
 
-}, 3000);
+},500);
 
 
 
-
-// Bearbeiten öffnen/schließen
-
-function bearbeiten(id) {
+});
 
 
-    let formular = document.getElementById("edit-" + id);
+},3000);
 
 
-    if (formular.style.display === "block") {
 
-        formular.style.display = "none";
 
-    } 
-    
-    else {
 
-        formular.style.display = "block";
 
-    }
+function bearbeiten(id){
+
+
+let formular=document.getElementById("edit-"+id);
+
+
+
+if(formular.style.display==="block"){
+
+formular.style.display="none";
+
+}
+
+else{
+
+formular.style.display="block";
+
+}
 
 
 }
@@ -301,69 +514,95 @@ function bearbeiten(id) {
 
 
 
-// Löschen Modal
 
-let deleteBox = document.getElementById("delete-box");
-
-
-function loeschen(id) {
+let deleteBox=document.getElementById("delete-box");
 
 
-    deleteBox.style.display = "flex";
+
+function loeschen(id){
 
 
-    document.getElementById("delete-link").href =
-        "/loeschen/" + id;
+deleteBox.style.display="flex";
+
+
+document.getElementById("delete-link").href="/loeschen/"+id;
+
+
+}
+
+
+
+function schliessen(){
+
+
+deleteBox.style.display="none";
 
 
 }
 
-
-
-function schliessen() {
-
-
-    deleteBox.style.display = "none";
-
-
-}
 
 
 </script>
+
+
+
+
+
 
 <script>
 
-const button = document.getElementById("darkmode-toggle");
 
-if (localStorage.getItem("darkmode") === "an") {
+const button=document.getElementById("darkmode-toggle");
 
-    document.body.classList.add("dark");
 
-    button.textContent = "☀️";
+
+if(localStorage.getItem("darkmode")==="an"){
+
+
+document.body.classList.add("dark");
+
+button.textContent="☀️";
+
 
 }
 
-button.onclick = function () {
 
-    document.body.classList.toggle("dark");
 
-    if (document.body.classList.contains("dark")) {
+button.onclick=function(){
 
-        localStorage.setItem("darkmode", "an");
 
-        button.textContent = "☀️";
+document.body.classList.toggle("dark");
 
-    } else {
 
-        localStorage.setItem("darkmode", "aus");
+if(document.body.classList.contains("dark")){
 
-        button.textContent = "🌙";
 
-    }
+localStorage.setItem("darkmode","an");
+
+button.textContent="☀️";
+
+
+}
+
+else{
+
+
+localStorage.setItem("darkmode","aus");
+
+button.textContent="🌙";
+
+
+}
+
 
 };
 
+
+
 </script>
+
+
+
 
 </body>
 

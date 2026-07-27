@@ -521,3 +521,96 @@ body.dark .datum {
     margin-top: 10px;
 
 }
+
+.kategorie {
+
+    display: inline-block;
+
+    background: #e8f0fe;
+
+    color: #1a73e8;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    margin: 10px 0;
+
+}
+
+.kategorie {
+
+    display: inline-block;
+
+    background: #eee;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    margin-top: 10px;
+
+}
+
+.badge {
+
+    display: inline-block;
+
+    padding: 6px 14px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    margin: 8px 0;
+
+}
+
+
+.arbeit {
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+
+.schule {
+
+    background: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.privat {
+
+    background: #ffedd5;
+
+    color: #c2410c;
+
+}
+
+
+.ideen {
+
+    background: #fef9c3;
+
+    color: #a16207;
+
+}
+
+
+.allgemein {
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+}

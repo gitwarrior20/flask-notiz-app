@@ -56,42 +56,62 @@ def get_user_id():
 
 import datetime
 
-
-def notiz_speichern(text):
+def notiz_speichern(text, kategorie):
 
     verbindung = sqlite3.connect("notizen.db")
     cursor = verbindung.cursor()
 
     datum = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
 
+
     cursor.execute(
         """
-        INSERT INTO notizen 
-        (text, user_id, datum, bearbeitet)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO notizen
+        (text, user_id, datum, bearbeitet, kategorie)
+        VALUES (?, ?, ?, ?, ?)
         """,
         (
             text,
             get_user_id(),
             datum,
-            datum
+            datum,
+            kategorie
         )
     )
+
 
     verbindung.commit()
     verbindung.close()
 
-def notizen_laden(suche=""):
+
+def notizen_laden(suche="", kategorie=""):
 
     verbindung = sqlite3.connect("notizen.db")
     cursor = verbindung.cursor()
 
 
-    if suche:
+    if kategorie:
 
         cursor.execute(
             """
-            SELECT id, text, datum, bearbeitet, angeheftet
+            SELECT id, text, datum, bearbeitet, angeheftet, kategorie
+            FROM notizen
+            WHERE user_id = ?
+            AND kategorie = ?
+            ORDER BY angeheftet DESC, id DESC
+            """,
+            (
+                get_user_id(),
+                kategorie
+            )
+        )
+
+
+    elif suche:
+
+        cursor.execute(
+            """
+            SELECT id, text, datum, bearbeitet, angeheftet, kategorie
             FROM notizen
             WHERE user_id = ?
             AND text LIKE ?
@@ -103,11 +123,12 @@ def notizen_laden(suche=""):
             )
         )
 
+
     else:
 
         cursor.execute(
             """
-            SELECT id, text, datum, bearbeitet, angeheftet
+            SELECT id, text, datum, bearbeitet, angeheftet, kategorie
             FROM notizen
             WHERE user_id = ?
             ORDER BY angeheftet DESC, id DESC
@@ -141,7 +162,7 @@ def notiz_loeschen(id):
     verbindung.close()
 
 
-def notiz_bearbeiten(id, neuer_text):
+def notiz_bearbeiten(id, neuer_text, kategorie):
 
     verbindung = sqlite3.connect("notizen.db")
     cursor = verbindung.cursor()
@@ -151,12 +172,13 @@ def notiz_bearbeiten(id, neuer_text):
     cursor.execute(
         """
         UPDATE notizen
-        SET text=?, bearbeitet=?
+        SET text=?, bearbeitet=?, kategorie=?
         WHERE id=? AND user_id=?
         """,
         (
             neuer_text,
             zeit,
+            kategorie,
             id,
             get_user_id()
         )
@@ -202,14 +224,20 @@ def home():
     if request.method == "POST":
 
         neue_notiz = request.form["notiz"]
+        kategorie = request.form["kategorie"]
 
         if neue_notiz:
-            notiz_speichern(neue_notiz)
+            notiz_speichern(neue_notiz, kategorie)
 
 
     suchbegriff = request.args.get("suche", "")
+    kategorie_filter = request.args.get("kategorie", "")
 
-    alle_notizen = notizen_laden(suchbegriff)
+
+    alle_notizen = notizen_laden(
+        suchbegriff,
+        kategorie_filter
+    )
 
 
     return render_template(
@@ -368,10 +396,21 @@ def bearbeiten(id):
 
     neuer_text = request.form["text"]
 
+    kategorie = request.form["kategorie"]
+
+
     notiz_bearbeiten(
         id,
-        neuer_text
+        neuer_text,
+        kategorie
     )
+
+
+    flash(
+        "Notiz wurde aktualisiert!",
+        "success"
+    )
+
 
     return redirect("/")
 
