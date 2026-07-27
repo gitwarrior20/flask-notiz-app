@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 app.secret_key = "mein-geheimer-schluessel"
 
+import datetime
 
 def datenbank_starten():
 
@@ -54,7 +55,6 @@ def get_user_id():
 
     return user[0]
 
-import datetime
 
 def notiz_speichern(text, kategorie):
 
@@ -437,7 +437,34 @@ def dashboard():
 
     anzahl_notizen = cursor.fetchone()[0]
 
+    # Kategorien zählen
+    cursor.execute(
+        """
+        SELECT kategorie, COUNT(*)
+        FROM notizen
+        WHERE user_id = ?
+        GROUP BY kategorie
+        """,
+        (get_user_id(),)
+    )
 
+    kategorien = cursor.fetchall()
+
+
+
+ # Angeheftete Notizen
+
+    cursor.execute(
+    """
+    SELECT COUNT(*)
+    FROM notizen
+    WHERE user_id = ?
+    AND angeheftet = 1
+    """,
+    (get_user_id(),)
+    )
+
+    angeheftet = cursor.fetchone()[0]
 
     # Benutzerinformationen
     cursor.execute(
@@ -453,7 +480,7 @@ def dashboard():
 
 
 
-    # letzte Bearbeitung
+ # letzte Bearbeitung
     cursor.execute(
         """
         SELECT bearbeitet
@@ -473,18 +500,33 @@ def dashboard():
     else:
         letzte_aktivitaet = "Noch keine Notizen"
 
+ # letzte 5 Notizen
+    cursor.execute(
+        """
+        SELECT text, datum, bearbeitet
+        FROM notizen
+        WHERE user_id = ?
+        ORDER BY id DESC
+        LIMIT 5
+        """,
+        (get_user_id(),)
+    )
 
+    letzte_notizen = cursor.fetchall()
 
     verbindung.close()
 
 
 
     return render_template(
-        "dashboard.html",
-        anzahl_notizen=anzahl_notizen,
-        user=user,
-        letzte_aktivitaet=letzte_aktivitaet
-    )
+    "dashboard.html",
+    anzahl_notizen=anzahl_notizen,
+    user=user,
+    letzte_aktivitaet=letzte_aktivitaet,
+    kategorien=kategorien,
+    angeheftet=angeheftet,
+    letzte_notizen=letzte_notizen
+)
 
 
 

@@ -614,3 +614,218 @@ body.dark .datum {
     color: #374151;
 
 }
+
+.stat-box {
+
+    background: white;
+
+    padding: 25px;
+
+    margin: 15px auto;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    width: 72%;
+
+    text-align: center;
+
+}
+.dashboard {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+}
+
+/* DARK MODE */
+
+body.dark {
+
+    background: #121212;
+    color: white;
+
+}
+
+
+body.dark .notiz,
+body.dark .stat-box,
+body.dark form {
+
+    background: #1e1e1e;
+    color: white;
+
+}
+
+
+body.dark input,
+body.dark select {
+
+    background: #2b2b2b;
+    color: white;
+    border-color: #555;
+
+}
+
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark p {
+
+    color: white;
+
+}
+
+
+body.dark .datum {
+
+    color: #aaa;
+
+}
+
+
+body.dark button {
+
+    background: #333;
+    color: white;
+
+}
+
+
+body.dark button:hover {
+
+    background: #555;
+
+}
+
+body.dark .delete-modal {
+
+    background: #1e1e1e;
+    color: white;
+
+}
+
+
+body.dark .delete-modal h2,
+body.dark .delete-modal p {
+
+    color: white;
+
+}
+
+
+body.dark .overlay {
+
+    background: rgba(0,0,0,0.7);
+
+}
+
+
+body.dark .delete-confirm {
+
+    background: #333;
+    color: white;
+
+}
+
+.dashboard-cards {
+
+    display: flex;
+
+    gap: 20px;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+}
+
+
+.stat-box {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    width: 220px;
+
+    text-align: center;
+
+}
+
+body.dark .stat-box {
+
+    background: #1e1e1e;
+
+    color: white;
+
+}
+
+.category-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 12px 0;
+
+}
+
+
+.category-name {
+
+    width: 90px;
+
+    font-weight: bold;
+
+}
+
+
+.bar-container {
+
+    flex: 1;
+
+    height: 12px;
+
+    background: #ddd;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+}
+
+
+.bar {
+
+    height: 100%;
+
+    background: #222;
+
+    border-radius: 10px;
+
+}
+
+body.dark .bar-container {
+
+    background: #444;
+
+}
+
+
+body.dark .bar {
+
+    background: white;
+
+}
