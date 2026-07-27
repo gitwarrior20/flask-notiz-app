@@ -97,6 +97,7 @@ def notizen_laden(suche="", kategorie=""):
             SELECT id, text, datum, bearbeitet, angeheftet, kategorie
             FROM notizen
             WHERE user_id = ?
+            AND papierkorb = 0
             AND kategorie = ?
             ORDER BY angeheftet DESC, id DESC
             """,
@@ -114,6 +115,7 @@ def notizen_laden(suche="", kategorie=""):
             SELECT id, text, datum, bearbeitet, angeheftet, kategorie
             FROM notizen
             WHERE user_id = ?
+            AND papierkorb = 0
             AND text LIKE ?
             ORDER BY angeheftet DESC, id DESC
             """,
@@ -131,6 +133,7 @@ def notizen_laden(suche="", kategorie=""):
             SELECT id, text, datum, bearbeitet, angeheftet, kategorie
             FROM notizen
             WHERE user_id = ?
+            AND papierkorb = 0
             ORDER BY angeheftet DESC, id DESC
             """,
             (get_user_id(),)
@@ -151,16 +154,19 @@ def notiz_loeschen(id):
 
     cursor.execute(
         """
-        DELETE FROM notizen
+        UPDATE notizen
+        SET papierkorb = 1
         WHERE id = ?
         AND user_id = ?
         """,
-        (id, get_user_id())
+        (
+            id,
+            get_user_id()
+        )
     )
 
     verbindung.commit()
-    verbindung.close()
-
+    verbindung.close() 
 
 def notiz_bearbeiten(id, neuer_text, kategorie):
 
@@ -231,12 +237,12 @@ def home():
 
 
     suchbegriff = request.args.get("suche", "")
-    kategorie_filter = request.args.get("kategorie", "")
+    kategorie = request.args.get("kategorie", "")
 
 
     alle_notizen = notizen_laden(
         suchbegriff,
-        kategorie_filter
+        kategorie
     )
 
 
@@ -421,28 +427,39 @@ def dashboard():
         return redirect("/login")
 
 
+    import datetime
+
+
     verbindung = sqlite3.connect("notizen.db")
     cursor = verbindung.cursor()
 
 
-    # Anzahl Notizen
+
+    # Anzahl normale Notizen
+
     cursor.execute(
         """
         SELECT COUNT(*)
         FROM notizen
         WHERE user_id = ?
+        AND papierkorb = 0
         """,
         (get_user_id(),)
     )
 
     anzahl_notizen = cursor.fetchone()[0]
 
-    # Kategorien zählen
+
+
+
+    # Kategorien
+
     cursor.execute(
         """
         SELECT kategorie, COUNT(*)
         FROM notizen
         WHERE user_id = ?
+        AND papierkorb = 0
         GROUP BY kategorie
         """,
         (get_user_id(),)
@@ -451,22 +468,51 @@ def dashboard():
     kategorien = cursor.fetchall()
 
 
+    anzahl_kategorien = len(kategorien)
 
- # Angeheftete Notizen
+
+
+
+    # Angeheftet
 
     cursor.execute(
-    """
-    SELECT COUNT(*)
-    FROM notizen
-    WHERE user_id = ?
-    AND angeheftet = 1
-    """,
-    (get_user_id(),)
+        """
+        SELECT COUNT(*)
+        FROM notizen
+        WHERE user_id = ?
+        AND angeheftet = 1
+        AND papierkorb = 0
+        """,
+        (get_user_id(),)
     )
 
     angeheftet = cursor.fetchone()[0]
 
-    # Benutzerinformationen
+
+
+
+
+    # Papierkorb Anzahl
+
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM notizen
+        WHERE user_id = ?
+        AND papierkorb = 1
+        """,
+        (get_user_id(),)
+    )
+
+    papierkorb_anzahl = cursor.fetchone()[0]
+
+
+
+
+
+
+    # Benutzer
+
     cursor.execute(
         """
         SELECT username, email
@@ -480,54 +526,111 @@ def dashboard():
 
 
 
- # letzte Bearbeitung
+
+
+    # Letzte Notiz
+
     cursor.execute(
         """
-        SELECT bearbeitet
+        SELECT text, datum
         FROM notizen
         WHERE user_id = ?
+        AND papierkorb = 0
         ORDER BY id DESC
         LIMIT 1
         """,
         (get_user_id(),)
     )
 
-    letzte_aktivitaet = cursor.fetchone()
+
+    letzte_notiz = cursor.fetchone()
 
 
-    if letzte_aktivitaet:
-        letzte_aktivitaet = letzte_aktivitaet[0]
+
+    if letzte_notiz:
+
+        letzte_notiz = letzte_notiz
+
     else:
-        letzte_aktivitaet = "Noch keine Notizen"
 
- # letzte 5 Notizen
+        letzte_notiz = ("Keine Notizen", "")
+
+
+
+
+
+
+
+    # Letzte 5 Notizen
+
     cursor.execute(
         """
-        SELECT text, datum, bearbeitet
+        SELECT text, datum
         FROM notizen
         WHERE user_id = ?
+        AND papierkorb = 0
         ORDER BY id DESC
         LIMIT 5
         """,
         (get_user_id(),)
     )
 
+
     letzte_notizen = cursor.fetchall()
+
+
 
     verbindung.close()
 
 
 
-    return render_template(
-    "dashboard.html",
-    anzahl_notizen=anzahl_notizen,
-    user=user,
-    letzte_aktivitaet=letzte_aktivitaet,
-    kategorien=kategorien,
-    angeheftet=angeheftet,
-    letzte_notizen=letzte_notizen
-)
 
+
+    # Begrüßung nach Uhrzeit
+
+    stunde = datetime.datetime.now().hour
+
+
+    if stunde < 12:
+
+        begruessung = "Guten Morgen ☀️"
+
+
+    elif stunde < 18:
+
+        begruessung = "Guten Tag 👋"
+
+
+    else:
+
+        begruessung = "Guten Abend 🌙"
+
+
+
+
+
+
+    return render_template(
+        "dashboard.html",
+
+        anzahl_notizen=anzahl_notizen,
+
+        user=user,
+
+        kategorien=kategorien,
+
+        anzahl_kategorien=anzahl_kategorien,
+
+        angeheftet=angeheftet,
+
+        papierkorb_anzahl=papierkorb_anzahl,
+
+        letzte_notiz=letzte_notiz,
+
+        letzte_notizen=letzte_notizen,
+
+        begruessung=begruessung
+    )
 
 
 @app.route("/profil", methods=["GET", "POST"])
@@ -690,6 +793,137 @@ def anheften(id):
     flash("Notiz wurde geändert!", "success")
 
     return redirect("/")
+
+@app.route("/papierkorb")
+def papierkorb():
+
+    if "user" not in session:
+        return redirect("/login")
+
+
+    verbindung = sqlite3.connect("notizen.db")
+    cursor = verbindung.cursor()
+
+
+    cursor.execute(
+        """
+        SELECT id, text, datum
+        FROM notizen
+        WHERE user_id = ?
+        AND papierkorb = 1
+        ORDER BY id DESC
+        """,
+        (get_user_id(),)
+    )
+
+
+    notizen = cursor.fetchall()
+
+    verbindung.close()
+
+
+    return render_template(
+        "papierkorb.html",
+        notizen=notizen
+    )
+
+@app.route("/wiederherstellen/<int:id>")
+def wiederherstellen(id):
+
+    verbindung = sqlite3.connect("notizen.db")
+    cursor = verbindung.cursor()
+
+
+    cursor.execute(
+        """
+        UPDATE notizen
+        SET papierkorb = 0
+        WHERE id = ?
+        AND user_id = ?
+        """,
+        (
+            id,
+            get_user_id()
+        )
+    )
+
+
+    verbindung.commit()
+    verbindung.close()
+
+
+    flash(
+        "Notiz wiederhergestellt!",
+        "success"
+    )
+
+
+    return redirect("/papierkorb")
+
+@app.route("/endgueltig_loeschen/<int:id>")
+def endgueltig_loeschen(id):
+
+    verbindung = sqlite3.connect("notizen.db")
+    cursor = verbindung.cursor()
+
+
+    cursor.execute(
+        """
+        DELETE FROM notizen
+        WHERE id = ?
+        AND user_id = ?
+        """,
+        (
+            id,
+            get_user_id()
+        )
+    )
+
+
+    verbindung.commit()
+    verbindung.close()
+
+
+    flash(
+        "Notiz endgültig gelöscht!",
+        "success"
+    )
+
+
+    return redirect("/papierkorb")
+
+@app.route("/papierkorb_leeren")
+def papierkorb_leeren():
+
+    if "user" not in session:
+        return redirect("/login")
+
+
+    verbindung = sqlite3.connect("notizen.db")
+    cursor = verbindung.cursor()
+
+
+    cursor.execute(
+        """
+        DELETE FROM notizen
+        WHERE user_id = ?
+        AND papierkorb = 1
+        """,
+        (get_user_id(),)
+    )
+
+
+    verbindung.commit()
+    verbindung.close()
+
+
+    flash(
+        "Papierkorb wurde geleert!",
+        "success"
+    )
+
+
+    return redirect("/papierkorb")
 
 datenbank_starten()
 

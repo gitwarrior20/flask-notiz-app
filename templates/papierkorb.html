@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Papierkorb</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<div id="papierkorb-box" class="overlay">
+
+
+    <div class="delete-modal">
+
+
+        <h2>
+            ⚠️ Papierkorb leeren?
+        </h2>
+
+
+        <p>
+            Alle gelöschten Notizen werden endgültig entfernt.
+        </p>
+
+
+        <button onclick="papierkorbSchliessen()">
+
+            Abbrechen
+
+        </button>
+
+
+
+        <a 
+        href="/papierkorb_leeren"
+        class="delete-confirm">
+
+            🧹 Leeren
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+<body>
+
+
+<div class="container">
+
+
+
+    <div class="topbar">
+
+
+        <h1>
+            🗑️ Papierkorb
+        </h1>
+
+
+
+        <div>
+
+
+            <a href="/">
+                Notizen
+            </a>
+
+
+            |
+
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+
+            |
+
+
+            <a href="/profil">
+                Profil
+            </a>
+
+
+            |
+
+
+            <a href="/logout">
+                Logout
+            </a>
+
+
+
+            <button id="darkmode-toggle">
+                🌙
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <div class="stat-box">
+
+
+
+        <h2>
+            🗑️ Gelöschte Notizen
+        </h2>
+
+         {% if notizen %}
+
+         <a class="delete-button" href="/papierkorb_leeren" onclick="papierkorbOeffnen(); return false;">
+         🧹 Papierkorb leeren
+         </a>
+
+         <br><br>
+
+         {% endif %}
+
+
+        {% if notizen %}
+
+
+
+            {% for notiz in notizen %}
+
+
+
+            <div class="notiz">
+
+
+
+                <h3>
+                    📝 Notiz
+                </h3>
+
+
+
+
+                <p class="notiz-text">
+
+                    {{ notiz[1] }}
+
+                </p>
+
+
+
+
+                <p class="datum">
+
+                    Erstellt:
+                    {{ notiz[2] }}
+
+                </p>
+
+
+
+
+                <a class= "restore-button" href="/wiederherstellen/{{ notiz[0] }}">
+
+                    ♻️ Wiederherstellen
+
+                </a>
+
+
+
+                <br><br>
+
+
+
+
+                <a class="delete-button" href="/endgueltig_loeschen/{{ notiz[0] }}">
+
+                    ❌ Endgültig löschen
+
+                </a>
+
+
+
+            </div>
+
+
+
+            {% endfor %}
+
+
+
+
+
+        {% else %}
+
+
+
+            <p>
+
+                🗑️ Der Papierkorb ist leer.
+
+            </p>
+
+
+
+        {% endif %}
+
+
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+const button = document.getElementById("darkmode-toggle");
+
+
+
+if (localStorage.getItem("darkmode") === "an") {
+
+
+    document.body.classList.add("dark");
+
+
+    button.textContent = "☀️";
+
+
+}
+
+
+
+
+
+button.onclick = function () {
+
+
+
+    document.body.classList.toggle("dark");
+
+
+
+    if (document.body.classList.contains("dark")) {
+
+
+
+        localStorage.setItem("darkmode", "an");
+
+
+        button.textContent = "☀️";
+
+
+
+    } else {
+
+
+
+        localStorage.setItem("darkmode", "aus");
+
+
+        button.textContent = "🌙";
+
+
+    }
+
+
+};
+
+function papierkorbOeffnen() {
+
+    document.getElementById("papierkorb-box").style.display = "flex";
+
+}
+
+
+
+function papierkorbSchliessen() {
+
+    document.getElementById("papierkorb-box").style.display = "none";
+
+}
+
+</script>
+
+
+
+
+
+</body>
+
+</html>

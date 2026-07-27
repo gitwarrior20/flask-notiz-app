@@ -3,42 +3,35 @@
 
 <head>
 
-<title>Dashboard</title>
+    <title>Dashboard</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
-
 <body>
 
-
 <div class="container">
-
 
     <div class="topbar">
 
         <h1>📊 Dashboard</h1>
 
-
         <div>
 
-            <a href="/">
-                Notizen
-            </a>
+            <a href="/">Notizen</a>
 
             |
 
-            <a href="/profil">
-                Profil
-            </a>
+            <a href="/profil">Profil</a>
 
             |
 
-            <a href="/logout">
-                Logout
-            </a>
+            <a href="/papierkorb">🗑️ Papierkorb</a>
 
+            |
+
+            <a href="/logout">Logout</a>
 
             <button id="darkmode-toggle">
                 🌙
@@ -46,324 +39,246 @@
 
         </div>
 
-
     </div>
-
-
-
 
 
     <div class="dashboard-card">
 
-
         <h2>
-            Hallo {{ session["user"] }} 👋
+            {{ begruessung }} {{ session["user"] }} 
         </h2>
 
+        <p>
+            Hier ist deine Übersicht über deine Notizen.
+        </p>
+
+    </div>
+
+
+<div class="dashboard-grid">
+
+
+    <div class="stat-card">
+
+        <h2>📝</h2>
+
+        <h1>
+            {{ anzahl_notizen }}
+        </h1>
 
         <p>
-            Willkommen zurück!
+            Notizen
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h2>📌</h2>
+
+        <h1>
+            {{ angeheftet }}
+        </h1>
+
+        <p>
+            Angeheftet
+        </p>
+
+    </div>
+
+
+
+
+    <div class="stat-card">
+
+        <h2>👤</h2>
+
+        <h1>
+            {{ user[0] }}
+        </h1>
+
+        <p>
+            Benutzer
+        </p>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h2>🏷️</h2>
+
+        <h1>
+            {{ anzahl_kategorien }}
+        </h1>
+
+        <p>
+            Kategorien
+        </p>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h2>🗑️</h2>
+
+        <h1>
+            {{ papierkorb_anzahl }}
+        </h1>
+
+        <p>
+            Papierkorb
+        </p>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h2>🕒</h2>
+
+        <p class="last-note">
+
+            {{ letzte_notiz[0] }}
+
         </p>
 
 
-    </div>
-
-
-
-
-
-
-    <div class="dashboard-grid">
-
-
-
-        <div class="stat-card notizen-card">
-
-
-            <h2>
-                📝
-            </h2>
-
-
-            <h1>
-                {{ anzahl_notizen }}
-            </h1>
-
-
-            <p>
-                Notizen
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="stat-card">
-
-
-            <h2>
-                👤
-            </h2>
-
-
-            <h3>
-                {{ user[0] }}
-            </h3>
-
-
-            <p>
-                Benutzername
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="stat-card">
-
-
-            <h2>
-                🕒
-            </h2>
-
-
-            <p>
-                {{ letzte_aktivitaet }}
-            </p>
-
-
-            <p>
-                Letzte Aktivität
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="stat-card pin-card">
-
-
-            <h2>
-                📌
-            </h2>
-
-
-            <h1>
-                {{ angeheftet }}
-            </h1>
-
-
-            <p>
-                Angeheftet
-            </p>
-
-
-        </div>
-
-
+        <small>
+            Letzte Notiz
+        </small>
 
     </div>
 
 
 
-
-
+ </div>
 
 
 
     <div class="stat-box category-card">
 
-
-        <h2>
-            🏷️ Kategorien
-        </h2>
-
-
+        <h2>🏷️ Kategorien</h2>
 
         {% for kategorie in kategorien %}
 
-
         <div class="category-row">
 
-
             <div class="category-name">
-
                 {{ kategorie[0] }}
-
             </div>
-
-
 
             <div class="bar-container">
 
-
-                <div 
-                class="bar"
-                style="width: {{ kategorie[1] * 20 }}%;">
+                <div
+                    class="bar"
+                    style="width: {{ kategorie[1] * 20 }}%;">
                 </div>
-
 
             </div>
 
-
-
             <span>
-
                 {{ kategorie[1] }}
-
             </span>
-
-
 
         </div>
 
-
         {% endfor %}
 
-
-
     </div>
-
-
-
-
-
-
 
 
 
     <div class="stat-box">
 
 
-        <h2>
-            🕒 Letzte Notizen
-        </h2>
+    <h2>
+    🕒 Letzte Notizen
+    </h2>
 
 
 
-        {% if letzte_notizen %}
+    {% if letzte_notizen %}
+
+
+    {% for notiz in letzte_notizen %}
+
+
+    <div class="last-note-card">
+
+
+       <p>
+            📝 {{ notiz[0] }}
+       </p>
+
+
+       <small>
+        {{ notiz[1] }}
+       </small>
+
+
+ </div>
+
+
+ {% endfor %}
 
 
 
-            {% for notiz in letzte_notizen %}
+ {% else %}
 
 
-            <p>
-
-                📝 {{ notiz[0] }}
-
-                <br>
+ <p>
+ Keine Notizen vorhanden.
+ </p>
 
 
-                <small>
-
-                    Erstellt: {{ notiz[1] }}
-
-                </small>
-
-
-            </p>
-
-
-            <hr>
-
-
-            {% endfor %}
+ {% endif %}
 
 
 
-        {% else %}
-
-
-
-            <p>
-                🕒 Noch keine Aktivitäten vorhanden.
-            </p>
-
-
-
-        {% endif %}
-
-
-
-    </div>
-
-
-
-
+ </div>
 
 </div>
 
 
-
-
-
-
-
-
-
 <script>
-
 
 const button = document.getElementById("darkmode-toggle");
 
-
 if (localStorage.getItem("darkmode") === "an") {
 
-
     document.body.classList.add("dark");
-
 
     button.textContent = "☀️";
 
 }
 
-
-
 button.onclick = function () {
-
 
     document.body.classList.toggle("dark");
 
-
-
     if (document.body.classList.contains("dark")) {
-
 
         localStorage.setItem("darkmode", "an");
 
-
         button.textContent = "☀️";
-
 
     } else {
 
-
         localStorage.setItem("darkmode", "aus");
-
 
         button.textContent = "🌙";
 
-
     }
-
 
 };
 
-
-
 </script>
-
-
 
 </body>
 

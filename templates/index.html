@@ -23,12 +23,23 @@
 
     <div>
 
-        Hallo {{ session["user"] }}
-
-        |
 
         <a href="/dashboard">
             Dashboard
+        </a>
+
+        |
+ 
+
+
+       <a href="/profil">
+            👤 Profil
+        </a>
+
+        |
+
+        <a href="/papierkorb">
+           🗑️ Papierkorb
         </a>
 
         |
@@ -112,58 +123,37 @@ required
 
 <form method="GET" class="suche">
 
+    <input
+        type="text"
+        name="suche"
+        placeholder="Notizen durchsuchen..."
+        value="{{ request.args.get('suche', '') }}"
+    >
 
-<input
-type="text"
-name="suche"
-placeholder="Notizen durchsuchen..."
->
+    <select name="kategorie">
 
+        <option value="">Alle Kategorien</option>
 
-<select name="kategorie">
+        <option value="Allgemein">📌 Allgemein</option>
+        
+        <option value="Arbeit">💼 Arbeit</option>
 
+        <option value="Schule">📚 Schule</option>
 
-<option value="">
-Alle Kategorien
-</option>
+        <option value="Privat">🏠 Privat</option>
 
+        <option value="Ideen">💡 Ideen</option>
 
-<option value="Arbeit">
-💼 Arbeit
-</option>
-
-
-<option value="Schule">
-📚 Schule
-</option>
+        
 
 
-<option value="Privat">
-🏠 Privat
-</option>
+    </select>
 
-
-<option value="Ideen">
-💡 Ideen
-</option>
-
-
-<option value="Allgemein">
-📌 Allgemein
-</option>
-
-
-</select>
-
-
-
-<button type="submit">
-🔎 Suchen
-</button>
-
+    <button type="submit">
+        🔍 Suchen
+    </button>
 
 </form>
-
 
 
 {% if not notizen %}
