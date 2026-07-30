@@ -27,7 +27,33 @@ Meine erste vollständige Webanwendung mit Python und Flask.
 
 ## 📷 Screenshots
 
+### Login
 
+![Login](screenshots/login.png)
+
+---
+
+### Notizen
+
+![Notizen](screenshots/notizen.png)
+
+---
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+### Papierkorb
+
+![Papierkorb](screenshots/papierkorb.png)
+
+---
+
+### Dark Mode
+
+![Dark Mode](screenshots/darkmode.png)
 
 ## 💻 Installation
 
