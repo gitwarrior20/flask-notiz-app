@@ -45,6 +45,12 @@ Meine erste vollständige Webanwendung mit Python und Flask.
 
 ---
 
+### Profil
+
+![Profil](screenshots/profil.png)
+
+---
+
 ### Papierkorb
 
 ![Papierkorb](screenshots/papierkorb.png)
